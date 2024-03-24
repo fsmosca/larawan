@@ -56,19 +56,19 @@ def main():
                 opt = st.popover('Options')
                 opt.selectbox(
                     'Model',
-                    options=MODELS,
+                    options=list(MODELS.keys()),
                     key='model',
                     index=0
                 )
                 opt.selectbox(
                     'Image Size',
-                    options=['256x256', '512x512', '1024x1024', '1792x1024', '1024x1792'],
+                    options=MODELS[ss.model]['size'],
                     key='size',
-                    index=2
+                    index=0
                 )
                 opt.selectbox(
                     'Number of images',
-                    options=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                    options=MODELS[ss.model]['num_image'],
                     key='num_images',
                     index=0
                 )
