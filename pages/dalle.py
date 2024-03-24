@@ -8,7 +8,11 @@ from modules.nav import Navigator
 from modules.openai import MODELS
 
 
-st.set_page_config(page_title='Image generator', layout='wide')
+st.set_page_config(
+    page_title='Bituin',
+    layout='wide',
+    page_icon='✨'
+)
 
 
 if 'msg' not in ss:
@@ -97,7 +101,7 @@ def main():
                 ss.msg = None
 
     with coltop[1]:
-        st.write('Image preview')
+        st.write('**Image preview**')
         st.markdown('<div style="height: 42px"></div>', unsafe_allow_html=True)
 
         for n, img_json in enumerate(ss.save):
