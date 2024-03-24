@@ -4,8 +4,8 @@ from io import BytesIO
 import streamlit as st
 from streamlit import session_state as ss
 from modules.openai import generate_image
-from modules.download import download_image
 from modules.nav import Navigator
+from modules.openai import MODELS
 
 
 st.set_page_config(page_title='Image generator', layout='wide')
@@ -13,8 +13,8 @@ st.set_page_config(page_title='Image generator', layout='wide')
 
 if 'msg' not in ss:
     ss.msg = None
-if 'output' not in ss:
-    ss.output = None
+if 'save' not in ss:
+    ss.save = []
 
 
 def generate():
@@ -22,22 +22,19 @@ def generate():
     
     Calls DALL.E image generator.
     """
-    if ss.model == 'None':
-        ss.model=None
-    if ss.size == 'None':
-        ss.size = None
-
     if not ss.prompt or not ss.apikey:
         ss.msg = 'prompt or apikey is missing'
         return
     
-    image_b64_json, ss.msg = generate_image(
+    ss.msg = generate_image(
         ss.apikey,
         ss.model,
         ss.size,
-        ss.prompt
+        ss.prompt,
+        ss.num_images,
+        ss.style,
+        ss.quality
     )
-    ss.output = image_b64_json
 
 
 def main():
@@ -59,21 +56,34 @@ def main():
                 opt = st.popover('Options')
                 opt.selectbox(
                     'Model',
-                    options=['None', 'dall-e-3', 'dall-e-2'],
+                    options=MODELS,
                     key='model',
-                    index=1
+                    index=0
                 )
                 opt.selectbox(
                     'Image Size',
-                    options=['None', '256x256', '512x512', '1024x1024', '1792x1024', '1024x1792'],
+                    options=['256x256', '512x512', '1024x1024', '1792x1024', '1024x1792'],
                     key='size',
-                    index=3
+                    index=2
                 )
-
-            with cols[2]:
-                download = st.popover('Download')
-                download_image(download, ss.output)
-
+                opt.selectbox(
+                    'Number of images',
+                    options=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                    key='num_images',
+                    index=0
+                )
+                opt.selectbox(
+                    'Style',
+                    options=['vivid', 'natural'],
+                    key='style',
+                    index=1
+                )
+                opt.selectbox(
+                    'Quality',
+                    options=['standard', 'hd'],
+                    key='quality',
+                    index=0
+                )
 
             st.text_area('Prompt', key='prompt', height=270)
             st.button('Generate image', on_click=generate, type='primary')
@@ -81,17 +91,25 @@ def main():
             if ss.msg:
                 st.error(ss.msg)
                 ss.msg = None
-            elif not ss.output:
-                pass
 
     with coltop[1]:
         st.write('Image preview')
         st.markdown('<div style="height: 42px"></div>', unsafe_allow_html=True)  # v spacer
 
-        if ss.output:
-            img_data = base64.b64decode(ss.output)
+        for n, img_json in enumerate(ss.save):
+            img_data = base64.b64decode(img_json)
             img_bytes = BytesIO(img_data)
             st.image(img_bytes, use_column_width=True)
+
+            fname = f'image_{n+1}.png'
+
+            st.download_button(
+                label=f"Save {fname} to disk",
+                data=img_bytes,
+                file_name=fname,
+                mime='image/png',
+                key=f'download_{n}'
+            )
 
 
 if __name__ == '__main__':
