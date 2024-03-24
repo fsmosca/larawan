@@ -3,12 +3,24 @@ import openai
 
 
 MODELS = {
-    'dall-e-3': {'size': ['1024x1024', '1792x1024', '1024x1792'], 'num_image': [1]},
-    'dall-e-2': {'size': ['256x256', '512x512', '1024x1024', '1792x1024', '1024x1792'], 'num_image': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+    'dall-e-3': {
+        'size': ['1024x1024', '1792x1024', '1024x1792'], 'num_image': [1]
+    },
+    'dall-e-2': {
+        'size': ['256x256', '512x512', '1024x1024', '1792x1024', '1024x1792'],
+        'num_image': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    }
 }
 
 
-def generate_image(apikey, model, size:str, prompt, num_images:int, style:str, quality:str):
+def generate_image(
+        apikey: str,
+        model: str,
+        size: str,
+        prompt: str,
+        num_images: int,
+        style: str,
+        quality: str):
     """Generates image based on prompt and DALL.E."""
     if 'save' not in ss:
         ss.save = []

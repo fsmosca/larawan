@@ -19,13 +19,13 @@ if 'save' not in ss:
 
 def generate():
     """A callback function of button widget.
-    
+
     Calls DALL.E image generator.
     """
     if not ss.prompt or not ss.apikey:
         ss.msg = 'prompt or apikey is missing'
         return
-    
+
     ss.msg = generate_image(
         ss.apikey,
         ss.model,
@@ -50,7 +50,11 @@ def main():
             with cols[0]:
                 api = st.popover('API')
                 with api.container():
-                    st.text_input('Openai API key', key='apikey', placeholder='enter openai api key')
+                    st.text_input(
+                        'Openai API key',
+                        key='apikey',
+                        placeholder='enter openai api key'
+                    )
 
             with cols[1]:
                 opt = st.popover('Options')
@@ -94,7 +98,7 @@ def main():
 
     with coltop[1]:
         st.write('Image preview')
-        st.markdown('<div style="height: 42px"></div>', unsafe_allow_html=True)  # v spacer
+        st.markdown('<div style="height: 42px"></div>', unsafe_allow_html=True)
 
         for n, img_json in enumerate(ss.save):
             img_data = base64.b64decode(img_json)
