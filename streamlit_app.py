@@ -2,7 +2,11 @@ import streamlit as st
 from modules.nav import Navigator
 
 
-st.set_page_config(page_title='Image generator', layout='centered')
+st.set_page_config(
+    page_title='Bituin',
+    layout='centered',
+    page_icon='✨'
+)
 
 
 def main():
