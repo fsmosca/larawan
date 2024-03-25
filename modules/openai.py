@@ -27,7 +27,7 @@ def generate_image(
     else:
         ss.save = []
 
-    num_images = 1 if model == MODELS[0] else num_images
+    num_images = 1 if model == list(MODELS.keys())[0] else num_images
 
     error_message = None
 
