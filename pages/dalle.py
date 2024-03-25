@@ -20,6 +20,20 @@ if 'msg' not in ss:
 if 'save' not in ss:
     ss.save = []
 
+# Handles model value crossing to different pages.
+# And updating the ui if selected model is not the default.
+if 'model_value' not in ss:
+    ss.model_value = list(MODELS.keys())[0]
+if 'model_index' not in ss:
+    ss.model_index = 0
+
+
+def model_cb():
+    # Copy the value from widget key because the value
+    # via widget key is lost if we go to other pages and come back on this page.
+    ss.model_value = ss.model
+    ss.model_index = list(MODELS.keys()).index(ss.model_value)
+
 
 def generate():
     """A callback function of button widget.
@@ -62,12 +76,7 @@ def main():
 
             with cols[1]:
                 opt = st.popover('Options')
-                opt.selectbox(
-                    'Model',
-                    options=list(MODELS.keys()),
-                    key='model',
-                    index=0
-                )
+                opt.radio('Model', options=list(MODELS.keys()), horizontal=True, key='model', on_change=model_cb, index=ss.model_index)
                 opt.selectbox(
                     'Image Size',
                     options=MODELS[ss.model]['size'],
